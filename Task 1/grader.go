@@ -48,5 +48,5 @@ func GradeCalculator(){
 }
 
 func main() {
-	Palindrome()
+	GradeCalculator()
 }

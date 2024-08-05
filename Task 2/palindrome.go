@@ -33,3 +33,4 @@ func Palindrome() {
 	}
 	fmt.Println("It is Palindrome")
 }
+
