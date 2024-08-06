@@ -17,31 +17,36 @@ type LibraryManager interface {
 type Library struct {
     Books   map[int]models.Book
     Members map[int]models.Member
+    nextID  int
 }
-
-
-
 
 func NewLibrary() *Library {
     return &Library{
-        Books:  make(map[int]models.Book),
+        Books:   make(map[int]models.Book),
         Members: make(map[int]models.Member),
+        nextID:  1,
     }
 }
 
-func (l *Library) AddBook(book models.Book){
+func (l *Library) GetNextUniqueID() int {
+    id := l.nextID
+    l.nextID++
+    return id
+}
+
+func (l *Library) AddBook(book models.Book) {
     l.Books[book.ID] = book
 }
 
-func (l *Library) SubscribeMember(member models.Member){
+func (l *Library) SubscribeMember(member models.Member) {
     l.Members[member.ID] = member
 }
 
-func(l *Library) UnsubscribeMemeber(memberId int){
+func (l *Library) UnsubscribeMember(memberId int) {
     delete(l.Members, memberId)
 }
 
-func (l *Library) RemoveBook(bookId int){
+func (l *Library) RemoveBook(bookId int) {
     delete(l.Books, bookId)
 }
 
@@ -103,9 +108,8 @@ func (l *Library) ListAvailableBooks() []models.Book {
 
 func (l *Library) ListBorrowedBooks(memberId int) []models.Book {
     member, exists := l.Members[memberId]
-    if !exists {
+    if (!exists) {
         return nil
     }
     return member.BorrowedBooks
 }
-

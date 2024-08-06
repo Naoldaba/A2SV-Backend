@@ -27,49 +27,46 @@ func LibraryController(lib *services.Library) {
         choice := reader.Text()
 
         switch choice {
-			case "1":
-				addBook(lib, reader)
-			case "2":
-				removeBook(lib, reader)
-			case "3":
-				borrowBook(lib, reader)
-			case "4":
-				returnBook(lib, reader)
-			case "5":
-				listAvailableBooks(lib)
-			case "6":
-				listBorrowedBooks(lib, reader)
-			case "7":
-				return
-			default:
-				fmt.Println()
-				fmt.Println("Invalid choice, please try again.")
-				fmt.Println()
+            case "1":
+                addBook(lib, reader)
+            case "2":
+                removeBook(lib, reader)
+            case "3":
+                borrowBook(lib, reader)
+            case "4":
+                returnBook(lib, reader)
+            case "5":
+                listAvailableBooks(lib)
+            case "6":
+                listBorrowedBooks(lib, reader)
+            case "7":
+                return
+            default:
+                fmt.Println()
+                fmt.Println("Invalid choice, please try again.")
+                fmt.Println()
         }
     }
 }
 
 func addBook(lib *services.Library, reader *bufio.Scanner) {
 
-    fmt.Print("Enter book ID: ")
-    reader.Scan()
-    id, _ := strconv.Atoi(reader.Text())
+    id := lib.GetNextUniqueID() 
 
     fmt.Print("Enter book Title: ")
     reader.Scan()
     title := reader.Text()
 
-    fmt.Println("Enter book Author")
-	reader.Scan()
-	author := reader.Text()
+    fmt.Print("Enter book Author: ")
+    reader.Scan()
+    author := reader.Text()
 
     book := models.Book{ID: id, Title: title, Author: author, Status: "Available"}
     lib.AddBook(book)
 
-	fmt.Println()
+    fmt.Println()
     fmt.Println("Book is added successfully!")
-	fmt.Println()
-
+    fmt.Println()
 }
 
 func removeBook(lib *services.Library, reader *bufio.Scanner) {
@@ -79,10 +76,9 @@ func removeBook(lib *services.Library, reader *bufio.Scanner) {
     id, _ := strconv.Atoi(reader.Text())
 
     lib.RemoveBook(id)
-	fmt.Println()
+    fmt.Println()
     fmt.Println("Book is removed successfully!")
-	fmt.Println()
-
+    fmt.Println()
 }
 
 func borrowBook(lib *services.Library, reader *bufio.Scanner) {
@@ -97,13 +93,13 @@ func borrowBook(lib *services.Library, reader *bufio.Scanner) {
 
     err := lib.BorrowBook(bookID, memberID)
     if err != nil {
-		fmt.Println()
+        fmt.Println()
         fmt.Println("Error:", err)
-		fmt.Println()
+        fmt.Println()
     } else {
-		fmt.Println()
+        fmt.Println()
         fmt.Println("Book is borrowed successfully!")
-		fmt.Println()
+        fmt.Println()
     }
 }
 
@@ -120,7 +116,7 @@ func returnBook(lib *services.Library, reader *bufio.Scanner) {
     if err != nil {
         fmt.Println("Error:", err)
     } else {
-		fmt.Println()
+        fmt.Println()
         fmt.Println("Book is returned successfully!")
         fmt.Println()
     }
@@ -129,15 +125,15 @@ func returnBook(lib *services.Library, reader *bufio.Scanner) {
 func listAvailableBooks(lib *services.Library) {
     books := lib.ListAvailableBooks()
     if len(books) == 0 {
-		fmt.Println()
-        fmt.Println("There are No available books.")
-		fmt.Println()
+        fmt.Println()
+        fmt.Println("There are no available books.")
+        fmt.Println()
     } else {
         fmt.Println("Available books:")
         for _, book := range books {
-			fmt.Println()
+            fmt.Println()
             fmt.Printf("ID: %d, Title: %s, Author: %s\n", book.ID, book.Title, book.Author)
-			fmt.Println()
+            fmt.Println()
         }
     }
 }
@@ -149,15 +145,14 @@ func listBorrowedBooks(lib *services.Library, reader *bufio.Scanner) {
 
     books := lib.ListBorrowedBooks(memberID)
     if len(books) == 0 {
-		fmt.Println()
+        fmt.Println()
         fmt.Println("There are no borrowed books by this member.")
-		fmt.Println()
+        fmt.Println()
     } else {
         fmt.Println("Borrowed books:")
+        fmt.Println()
         for _, book := range books {
-			fmt.Println()
             fmt.Printf("ID: %d, Title: %s, Author: %s\n", book.ID, book.Title, book.Author)
-			fmt.Println()
         }
     }
 }
