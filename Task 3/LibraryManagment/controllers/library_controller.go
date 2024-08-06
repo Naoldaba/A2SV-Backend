@@ -20,7 +20,9 @@ func LibraryController(lib *services.Library) {
         fmt.Println("4. Return a book")
         fmt.Println("5. List all available books")
         fmt.Println("6. List all borrowed books by a member")
-        fmt.Println("7. Quit")
+        fmt.Println("7. Register as a member")
+        fmt.Println("8. list all members")
+        fmt.Println("9. Quit")
 
         fmt.Print("Enter your choice: ")
         reader.Scan()
@@ -40,7 +42,11 @@ func LibraryController(lib *services.Library) {
             case "6":
                 listBorrowedBooks(lib, reader)
             case "7":
-                return
+                registerUser(lib, reader)
+            case "8":
+                listMembers(lib)
+            case "9":
+                return 
             default:
                 fmt.Println()
                 fmt.Println("Invalid choice, please try again.")
@@ -51,7 +57,7 @@ func LibraryController(lib *services.Library) {
 
 func addBook(lib *services.Library, reader *bufio.Scanner) {
 
-    id := lib.GetNextUniqueID() 
+    id := lib.GetNextUniqueBookID() 
 
     fmt.Print("Enter book Title: ")
     reader.Scan()
@@ -153,6 +159,37 @@ func listBorrowedBooks(lib *services.Library, reader *bufio.Scanner) {
         fmt.Println()
         for _, book := range books {
             fmt.Printf("ID: %d, Title: %s, Author: %s\n", book.ID, book.Title, book.Author)
+        }
+    }
+}
+func registerUser(lib *services.Library, reader *bufio.Scanner){
+    id := lib.GetNextUniqueMemberID()
+    
+    fmt.Println("Pls Enter Your Name: ")
+    reader.Scan()
+    name := reader.Text()
+
+    user := models.Member{ID: id, Name: name}
+    lib.SubscribeMember(user)
+
+    fmt.Println()
+    fmt.Println("Member is added successfully!")
+    fmt.Println()
+}
+
+func listMembers(lib *services.Library){
+    members := lib.ListAllMembers()
+
+    if len(members) == 0 {
+        fmt.Println()
+        fmt.Println("There are no registered Users.")
+        fmt.Println()
+    } else {
+        fmt.Println("Users:")
+        for _, user := range members{
+            fmt.Println()
+            fmt.Printf("ID: %d, Name: %s, BorrowedBooks: %v\n", user.ID, user.Name, user.BorrowedBooks)
+            fmt.Println()
         }
     }
 }

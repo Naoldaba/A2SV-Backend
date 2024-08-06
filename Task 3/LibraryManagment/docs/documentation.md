@@ -12,6 +12,8 @@ This is console-based library management system written in Go. It demonstrates t
 - Return borrowed books.
 - List all available books.
 - List all books borrowed by a specific member.
+- Register User
+- List All Members
 
 ## Structs
 
@@ -29,6 +31,8 @@ This is console-based library management system written in Go. It demonstrates t
 ### Library
 - map[int]Books
 - map[int]Members
+- nextBookID
+- nextUserID
 
 
 ## Folders and Files

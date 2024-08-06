@@ -3,7 +3,10 @@ package services
 import (
     "library_managment/models"
     "errors"
+    "sync"
 )
+
+var mu sync.Mutex
 
 type LibraryManager interface {
     AddBook(book models.Book)
@@ -17,37 +20,82 @@ type LibraryManager interface {
 type Library struct {
     Books   map[int]models.Book
     Members map[int]models.Member
-    nextID  int
+    nextBookID  int
+    nextUserID  int
 }
 
 func NewLibrary() *Library {
     return &Library{
         Books:   make(map[int]models.Book),
         Members: make(map[int]models.Member),
-        nextID:  1,
+        nextBookID:  1,
+        nextUserID: 1,
     }
 }
 
-func (l *Library) GetNextUniqueID() int {
-    id := l.nextID
-    l.nextID++
+func (l *Library) GetNextUniqueBookID() int {
+    mu.Lock()
+    defer mu.Unlock()
+    id := l.nextBookID
+    l.nextBookID++
     return id
 }
 
-func (l *Library) AddBook(book models.Book) {
+func (l *Library) GetNextUniqueMemberID() int {
+    mu.Lock()
+    defer mu.Unlock()
+    id := l.nextUserID
+    l.nextUserID++
+    return id
+}
+
+func (l *Library) AddBook(book models.Book) error {
+    for _, mem_book := range l.Books{
+        if mem_book.ID == book.ID{
+            return errors.New("book already added")
+        }  
+    }
     l.Books[book.ID] = book
+    return nil
 }
 
-func (l *Library) SubscribeMember(member models.Member) {
+func (l *Library) ListAllMembers() []models.Member{
+    var Members []models.Member
+    for _, book := range l.Members {
+        Members = append(Members, book)
+    }
+    return Members
+}
+
+func (l *Library) SubscribeMember(member models.Member) error {
+    for _, mem_user := range l.Members{
+        if mem_user.ID == member.ID{
+            return errors.New("user already registered")
+        }  
+    }
     l.Members[member.ID] = member
+    return nil
 }
 
-func (l *Library) UnsubscribeMember(memberId int) {
-    delete(l.Members, memberId)
+func (l *Library) UnsubscribeMember(memberId int) error {
+    for _, mem_user := range l.Books{
+        if mem_user.ID == memberId{
+            delete(l.Members, memberId)
+            return nil
+        }
+    }
+    return errors.New("no such member")
+    
 }
 
-func (l *Library) RemoveBook(bookId int) {
-    delete(l.Books, bookId)
+func (l *Library) RemoveBook(bookId int) error {
+    for _, mem_book := range l.Books{
+        if mem_book.ID == bookId{
+            delete(l.Books, bookId)
+            return nil
+        }
+    }
+    return errors.New("no such book")
 }
 
 func (l *Library) BorrowBook(bookId int, memberId int) error {
@@ -58,7 +106,7 @@ func (l *Library) BorrowBook(bookId int, memberId int) error {
 
     member, exists := l.Members[memberId]
     if !exists {
-        return errors.New("member not found")
+        return errors.New("member not found. pls register first")
     }
 
     book.Status = "Borrowed"
