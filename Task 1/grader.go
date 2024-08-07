@@ -1,50 +1,78 @@
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
+)
 
 var (
-	FistName string
-	LastName string
-	Name	string
-	Num_sub	int
+	FirstName string
+	LastName  string
+	Name      string
+	NumSub    int
 )
 
 var Grades = make(map[string]float64)
 
-func GradeCalculator(){
-	fmt.Println("Welcome! Pls enter your name. (e.g Naol Daba)")
-	fmt.Scanf("%s %s\n", &FistName, &LastName)
-	Name = FistName + " "+ LastName
+func GradeCalculator() {
+	fmt.Println("Welcome! Please enter your name. (e.g., Naol Daba)")
+	fmt.Scanf("%s %s\n", &FirstName, &LastName)
+	Name = FirstName + " " + LastName
 
 	fmt.Printf("Hey %v, how many subjects did you take?\n", Name)
-	fmt.Scanln(&Num_sub)
-	fmt.Printf("You took %d subjects.\n", Num_sub)
+	fmt.Scanln(&NumSub)
 
-	var subject string
-	var grade float64
+	if NumSub <= 0 {
+		fmt.Println("You did not take any subjects.")
+		return
+	}
 
-	for i:=0; i<Num_sub; i++ {
-		fmt.Printf("Enter name of subject number %v :\n", i+1)
-		fmt.Scanln(&subject)
+	fmt.Printf("You took %d subjects.\n", NumSub)
 
-		fmt.Printf("Enter subject grade %v : (1-100)\n", i+1)
-		fmt.Scanln(&grade)
+	reader := bufio.NewReader(os.Stdin)
+
+	for i := 0; i < NumSub; i++ {
+		fmt.Printf("Enter the name of subject number %v:\n", i+1)
+		subject, _ := reader.ReadString('\n')
+		subject = strings.TrimSpace(subject)
+		var grade float64
+
+		for {
+			fmt.Printf("Enter the grade for %v (0-100):\n", subject)
+			fmt.Scanln(&grade)
+			if grade > 100 || grade < 0{
+				fmt.Println("Invalid Input")
+				fmt.Println()
+			} else{
+				break
+			}
+		}
+
 		Grades[subject] = grade
 	}
 
 	fmt.Printf("Name\t\t%v\n", Name)
 
-	var total, average float64
+	var total float64
 
-	for key, val := range Grades{
+	for key, val := range Grades {
 		fmt.Printf("%v\t\t%v\n", key, val)
 		total += val
 	}
 
-	average = total / float64(Num_sub)
+	average := calcAverage(total, NumSub)
 
-	fmt.Printf("total\t\t%v\n", total)
-	fmt.Printf("average\t\t%v\n", average)
+	fmt.Printf("Total\t\t%v\n", total)
+	fmt.Printf("Average\t\t%v\n", average)
+}
+
+func calcAverage(total float64, numSub int) float64 {
+	if numSub == 0 {
+		return 0
+	}
+	return total / float64(numSub)
 }
 
 func main() {
