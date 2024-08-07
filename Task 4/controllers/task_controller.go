@@ -45,7 +45,7 @@ func AddTask(ctx *gin.Context) {
     ctx.IndentedJSON(http.StatusOK, task)
 }
 
-func UpdateTask(ctx *gin.Context) {
+func UpdateSpecificField(ctx *gin.Context) {
     var updatedTask models.UpdateTask
     err := ctx.BindJSON(&updatedTask)
     if err != nil {
@@ -90,10 +90,31 @@ func UpdateTask(ctx *gin.Context) {
         return 
     }
     
-    ctx.IndentedJSON(http.StatusOK, gin.H{
-        "updatedTask": updates,
-    })
+    ctx.IndentedJSON(http.StatusOK, updates)
 
+}
+
+func UpdateTask(ctx *gin.Context) {
+    var updatedTask models.Task
+    if err := ctx.ShouldBindJSON(&updatedTask); err != nil {
+        ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+    id := ctx.Param("id")
+    taskId, err := strconv.Atoi(id)
+    if err != nil {
+        ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid task ID"})
+        return
+    }
+
+    task, err := taskService.UpdateTask(taskId, updatedTask)
+    if err != nil {
+        ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+        return
+    }
+
+    ctx.JSON(http.StatusOK, task)
 }
 
 func DeleteTask(ctx *gin.Context) {

@@ -83,10 +83,10 @@
     "error": "error message"
   }
   ```
-### Update Task
+### Update Task /PUT
 
 - **Endpoint:** `/tasks/:id`
-- **Method:** `PATCH`
+- **Method:** `PUT`
 - **Description:** Update an existing task.
 - **Parameters:**
   - `id` (path): The ID of the task to update.
@@ -97,6 +97,39 @@
     "description": "Updated description",
     "dueDate": "2024-08-02",
     "status": "Completed"
+  }
+  ```
+- **Response:**
+  - **Status Code:** `200 OK`
+  - **Body:**
+  ```json
+  {
+    "id": 1,
+    "title": "Updated Task",
+    "description": "Updated description",
+    "dueDate": "2024-08-02",
+    "status": "Completed"
+  }
+  ```
+  - **Status Code:** `404 Not Found`
+  - **Body:**
+  ```json
+  {
+    "error": "error message"
+  }
+  ```
+
+### Update Task /PATCH
+
+- **Endpoint:** `/tasks/:id`
+- **Method:** `PATCH`
+- **Description:** Update an existing task.
+- **Parameters:**
+  - `id` (path): The ID of the task to update.
+- **Request Body:**
+  ```json
+  {
+    "title": "Updated Task",
   }
   ```
 - **Response:**
