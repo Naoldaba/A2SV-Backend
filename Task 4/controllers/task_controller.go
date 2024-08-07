@@ -46,26 +46,54 @@ func AddTask(ctx *gin.Context) {
 }
 
 func UpdateTask(ctx *gin.Context) {
-    var updatedTask models.Task
-    if err := ctx.BindJSON(&updatedTask); err != nil {
-        ctx.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
-
-    id := ctx.Param("id")
-    taskId, err := strconv.Atoi(id)
+    var updatedTask models.UpdateTask
+    err := ctx.BindJSON(&updatedTask)
     if err != nil {
-        ctx.IndentedJSON(http.StatusBadRequest, gin.H{"error": "Invalid task ID"})
+        ctx.IndentedJSON(http.StatusBadRequest, gin.H{
+            "message": "Invalid format",
+        })
         return
     }
 
-    task, err := taskService.UpdateTask(taskId, updatedTask)
+    id, err := strconv.Atoi(ctx.Param("id"))
     if err != nil {
-        ctx.IndentedJSON(http.StatusNotFound, gin.H{"error": err.Error()})
+        ctx.IndentedJSON(http.StatusBadRequest, gin.H{
+            "message": "Invalid Id",
+        })
         return
     }
+    existingTask, err := taskService.GetTaskById(id)
+    if err != nil {
+        ctx.IndentedJSON(http.StatusBadRequest, gin.H{
+            "message": "No such Task",
+        })
+        return
+    }
+    if updatedTask.Title != nil {
+        existingTask.Title = *updatedTask.Title
+    }
+    if updatedTask.Description != nil {
+        existingTask.Description = *updatedTask.Description
+    }
+    if updatedTask.DueDate != nil {
+        existingTask.DueDate = *updatedTask.DueDate
+    }
+    if updatedTask.Status != nil {
+        existingTask.Status = *updatedTask.Status
+    }
 
-    ctx.IndentedJSON(http.StatusOK, task)
+    updates, err := taskService.UpdateTask(id, existingTask)
+    if err != nil {
+        ctx.IndentedJSON(http.StatusBadRequest, gin.H{
+            "message": "No such Task",
+        })
+        return 
+    }
+    
+    ctx.IndentedJSON(http.StatusOK, gin.H{
+        "updatedTask": updates,
+    })
+
 }
 
 func DeleteTask(ctx *gin.Context) {

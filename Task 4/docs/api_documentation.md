@@ -86,7 +86,7 @@
 ### Update Task
 
 - **Endpoint:** `/tasks/:id`
-- **Method:** `PUT`
+- **Method:** `PATCH`
 - **Description:** Update an existing task.
 - **Parameters:**
   - `id` (path): The ID of the task to update.
@@ -115,7 +115,7 @@
   - **Body:**
   ```json
   {
-    "error": "Invalid task ID"
+    "error": "error message"
   }
   ```
 
@@ -138,7 +138,7 @@
   - **Body:**
   ```json
   {
-    "error": "Task not found"
+    "error": "error message"
   }
   ```
 

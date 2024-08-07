@@ -11,3 +11,10 @@ type Task struct {
 	DueDate		time.Time	`json:"due_date"`
 	Status		string		`json:"status"`
 }
+
+type UpdateTask struct {
+	Title		*string		`json:"title,omitempty"`
+	Description	*string		`json:"description,omitempty"`
+	DueDate		*time.Time	`json:"due_date,omitempty"`
+	Status		*string		`json:"status,omitempty"`
+}
