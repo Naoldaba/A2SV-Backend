@@ -5,10 +5,17 @@ import (
 	"task_manager_api/data"
 	"task_manager_api/models"
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func GetTasks(ctx *gin.Context, taskService *data.TaskService) {
-	tasks, err := taskService.GetTasks()
+
+var taskCollection *mongo.Collection = data.OpenCollection(data.Client, "Tasks")
+
+
+func GetTasks(ctx *gin.Context) {
+    taskService := data.TaskService{}
+
+	tasks, err := taskService.GetTasks(taskCollection)
 	if err != nil {
 		ctx.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -16,10 +23,11 @@ func GetTasks(ctx *gin.Context, taskService *data.TaskService) {
 	ctx.IndentedJSON(http.StatusOK, tasks)
 }
 
-func GetTaskById(ctx *gin.Context, taskService *data.TaskService) {
+func GetTaskById(ctx *gin.Context) {
 	id := ctx.Param("id")
 
-	task, err := taskService.GetTaskById(id)
+    taskService := data.TaskService{}
+	task, err := taskService.GetTaskById(taskCollection, id)
 	if err != nil {
 		ctx.IndentedJSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -28,14 +36,16 @@ func GetTaskById(ctx *gin.Context, taskService *data.TaskService) {
 	ctx.IndentedJSON(http.StatusOK, task)
 }
 
-func AddTask(ctx *gin.Context, taskService *data.TaskService) {
+func AddTask(ctx *gin.Context) {
 	var newTask models.Task
+
+    taskService := data.TaskService{}
 	if err := ctx.BindJSON(&newTask); err != nil {
 		ctx.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	task, err := taskService.AddTask(newTask)
+	task, err := taskService.AddTask(taskCollection,newTask)
 	if err != nil {
 		ctx.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -44,8 +54,10 @@ func AddTask(ctx *gin.Context, taskService *data.TaskService) {
 	ctx.IndentedJSON(http.StatusOK, task)
 }
 
-func UpdateSpecificField(ctx *gin.Context, taskService *data.TaskService) {
+func UpdateSpecificField(ctx *gin.Context) {
 	var updatedTask models.UpdateTask
+
+    taskService := data.TaskService{}
 	err := ctx.BindJSON(&updatedTask)
 	if err != nil {
 		ctx.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid format"})
@@ -54,7 +66,7 @@ func UpdateSpecificField(ctx *gin.Context, taskService *data.TaskService) {
 
 	id := ctx.Param("id")
 
-	existingTask, err := taskService.GetTaskById(id)
+	existingTask, err := taskService.GetTaskById(taskCollection, id)
 	if err != nil {
 		ctx.IndentedJSON(http.StatusBadRequest, gin.H{"message": "No such Task"})
 		return
@@ -73,7 +85,7 @@ func UpdateSpecificField(ctx *gin.Context, taskService *data.TaskService) {
 		existingTask.Status = *updatedTask.Status
 	}
 
-	updates, err := taskService.UpdateTask(id, existingTask)
+	updates, err := taskService.UpdateTask(taskCollection, id, existingTask)
 	if err != nil {
 		ctx.IndentedJSON(http.StatusBadRequest, gin.H{"message": "No such Task"})
 		return
@@ -82,8 +94,10 @@ func UpdateSpecificField(ctx *gin.Context, taskService *data.TaskService) {
 	ctx.IndentedJSON(http.StatusOK, updates)
 }
 
-func UpdateTask(ctx *gin.Context, taskService *data.TaskService) {
+func UpdateTask(ctx *gin.Context) {
 	var updatedTask models.Task
+
+    taskService := data.TaskService{}
 	if err := ctx.ShouldBindJSON(&updatedTask); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -91,7 +105,7 @@ func UpdateTask(ctx *gin.Context, taskService *data.TaskService) {
 
 	id := ctx.Param("id")
 
-	task, err := taskService.UpdateTask(id, updatedTask)
+	task, err := taskService.UpdateTask(taskCollection, id, updatedTask)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -100,10 +114,11 @@ func UpdateTask(ctx *gin.Context, taskService *data.TaskService) {
 	ctx.JSON(http.StatusOK, task)
 }
 
-func DeleteTask(ctx *gin.Context, taskService *data.TaskService) {
+func DeleteTask(ctx *gin.Context) {
 	id := ctx.Param("id")
 
-	err := taskService.DeleteTask(id)
+    taskService := data.TaskService{}
+	err := taskService.DeleteTask(taskCollection, id)
 	if err != nil {
 		ctx.IndentedJSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return

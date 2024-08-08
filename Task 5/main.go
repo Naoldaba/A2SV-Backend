@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
 	"task_manager_api/data"
 	"task_manager_api/routers"
 
@@ -17,19 +16,12 @@ func main() {
 		log.Fatal("err loading .env file")
 	}
 
-	dbName := os.Getenv("DB_NAME")
-	colName := os.Getenv("COLLECTION_NAME")
+	Client := data.Client
 
-	connString := os.Getenv("CONNECTION_STRING")
+	r := gin.New()
+	r.Use(gin.Logger())
 
-	taskService := data.CreateTaskService(dbName, colName, connString)
-
-	if taskService == nil {
-		log.Fatal("Failed to connect to the database")
-	}
-
-	r := gin.Default()
-	router.CreateRouter(r, taskService)
+	router.CreateRouter(r, Client)
 
 	if err := r.Run("localhost:5050"); err!= nil{
 		log.Fatal(err)
