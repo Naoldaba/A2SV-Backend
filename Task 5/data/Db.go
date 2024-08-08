@@ -11,28 +11,31 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func DbInstance() *mongo.Client{
 
+func DbInstance() (*mongo.Client, error){
 	err := godotenv.Load()
-	if err != nil{
-		log.Fatal("err loading .env file")
+	if err != nil {
+		log.Fatal("error loading .env file")
 	}
 
-	db_string := os.Getenv("CONNECTION_STRING")
-
-	clientOptions := options.Client().ApplyURI(db_string)
-	ctx, cancel := context.WithTimeout(context.Background(), 10 * time.Second)
-    defer cancel()
+	dbString := os.Getenv("CONNECTION_STRING")
+	clientOptions := options.Client().ApplyURI(dbString)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	client, err := mongo.Connect(ctx, clientOptions)
-
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
-	return client
+
+	err = client.Ping(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return client, nil
 }
 
-var Client *mongo.Client = DbInstance()
 
 func OpenCollection(client *mongo.Client, colName string) *mongo.Collection{
 	err := godotenv.Load()

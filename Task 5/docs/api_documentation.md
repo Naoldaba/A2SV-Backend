@@ -2,11 +2,10 @@
 
 ## Setup Environmental Variables and Make Connection with Database
 
-- create .env file
+- Create .env file
     - add the following environment-specific variables on new lines in the form of NAME=VALUE
           - CONNECTION_STRING = mongodb://0.0.0.0:27017
-          - COLLECTION_NAME = TaskManager //db name
-          - DB_NAME = Tasks //collection name
+          - PORT = 5050 //
 
 ## Running the App 
 

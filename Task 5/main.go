@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 	"task_manager_api/data"
 	"task_manager_api/routers"
 
@@ -12,18 +13,26 @@ import (
 
 func main() {
 	err := godotenv.Load()
+	PORT := os.Getenv("PORT")
+
 	if err != nil{
 		log.Fatal("err loading .env file")
 	}
 
-	Client := data.Client
+	_, err = data.DbInstance()
+	if err != nil {
+		log.Fatal("Failed to connect to database:", err)
+		return 
+	}
+
+	fmt.Println("Database Connected Successfully")
 
 	r := gin.New()
 	r.Use(gin.Logger())
 
-	router.CreateRouter(r, Client)
+	router.CreateRouter(r)
 
-	if err := r.Run("localhost:5050"); err!= nil{
+	if err := r.Run(":" + PORT); err!= nil{
 		log.Fatal(err)
 	}
 
