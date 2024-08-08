@@ -1,5 +1,18 @@
 # API Endpoints Documentation
 
+## Setup Environmental Variables and Make Connection with Database
+
+- create .env file
+    - add the following environment-specific variables on new lines in the form of NAME=VALUE
+          - CONNECTION_STRING = mongodb://0.0.0.0:27017
+          - COLLECTION_NAME = TaskManager //db name
+          - DB_NAME = Tasks //collection name
+
+## Running the App 
+
+- go run .
+
+
 ## Task Management Endpoints
 
 ### Get All Tasks
@@ -174,3 +187,7 @@
     "error": "error message"
   }
   ```
+
+# Connection to MongoDB 
+
+## 
