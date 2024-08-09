@@ -6,6 +6,8 @@
     - add the following environment-specific variables on new lines in the form of NAME=VALUE
           - CONNECTION_STRING = mongodb://0.0.0.0:27017
           - PORT = 8080 //
+          - SECRET_KEY = //
+          - DB_NAME = //
 
 ## Running the App 
 
