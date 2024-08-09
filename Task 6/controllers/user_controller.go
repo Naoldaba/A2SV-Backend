@@ -35,7 +35,13 @@ func Register(c *gin.Context){
 		c.JSON(400, gin.H{"error": "Invalid request payload"})
 		return
 	}
-
+	_, err := userService.GetUser(userCollection, user.Email)
+	if err == nil {
+		c.JSON(400, gin.H{
+			"message":"User with this email already exists" ,
+		})
+		return 
+	}
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 	c.JSON(500, gin.H{"error": "Internal server error"})
