@@ -24,6 +24,7 @@
 
 #### Middleware:
 - **JWTValidation:** Validates the JWT token in the request.
+- **RoleAuth("ADMIN"):** Authorizes the request for users with the "ADMIN" and "USER" role.
 
 #### Response:
 - **200 OK:** Successful response, returns the list of tasks.
@@ -34,6 +35,10 @@
 
 - **Endpoint:** `GET /tasks/:id`
 - **Description:** Retrieves a specific task by its ID.
+
+#### Middleware:
+- **JWTValidation:** Validates the JWT token in the request.
+- **RoleAuth("ADMIN"):** Authorizes the request for users with the "ADMIN" and "USER" role.
 
 #### Parameters:
 - `id` (required): The ID of the task to retrieve.
@@ -65,6 +70,9 @@
 - **Endpoint:** `PUT /tasks/:id`
 - **Description:** Updates an existing task.
 
+#### Middleware:
+- **JWTValidation:** Validates the JWT token in the request.
+- **RoleAuth("ADMIN"):** Authorizes the request for users with the "ADMIN" role.
 
 #### Parameters:
 - `id` (required): The ID of the task to update.
@@ -101,6 +109,10 @@
 
 - **Endpoint:** `DELETE /tasks/:id`
 - **Description:** Deletes an existing task.
+
+#### Middleware:
+- **JWTValidation:** Validates the JWT token in the request.
+- **RoleAuth("ADMIN"):** Authorizes the request for users with the "ADMIN" role.
 
 #### Parameters:
 - `id` (required): The ID of the task to delete.
