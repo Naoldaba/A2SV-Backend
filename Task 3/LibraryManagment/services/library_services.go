@@ -9,12 +9,17 @@ import (
 var mu sync.Mutex
 
 type LibraryManager interface {
-    AddBook(book models.Book)
-    RemoveBook(bookId int)
+    AddBook(book models.Book) error
+    RemoveBook(bookId int) error
     BorrowBook(bookId int, memberId int) error
     ReturnBook(bookId int, memberId int) error
     ListAvailableBooks() []models.Book
     ListBorrowedBooks(memberId int) []models.Book
+    SubscribeMember(member models.Member) error
+    UnsubscribeMember(memberId int) error
+    ListAllMembers() []models.Member
+    GetNextUniqueBookID() int
+    GetNextUniqueMemberID() int
 }
 
 type Library struct {
@@ -24,7 +29,7 @@ type Library struct {
     nextUserID  int
 }
 
-func NewLibrary() *Library {
+func NewLibrary() LibraryManager {
     return &Library{
         Books:   make(map[int]models.Book),
         Members: make(map[int]models.Member),

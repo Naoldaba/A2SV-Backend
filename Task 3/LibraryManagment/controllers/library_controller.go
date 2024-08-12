@@ -11,7 +11,7 @@ import (
 	"regexp"
 )
 
-func LibraryController(lib *services.Library) {
+func LibraryController(lib services.LibraryManager) {
 
     reader := bufio.NewScanner(os.Stdin)
     for {
@@ -62,7 +62,7 @@ func isValidString(s string) bool {
 	return re.MatchString(s)
 }
 
-func addBook(lib *services.Library, reader *bufio.Scanner) {
+func addBook(lib services.LibraryManager, reader *bufio.Scanner) {
 	id := lib.GetNextUniqueBookID()
 	fmt.Print("Enter book Title: ")
 	if !reader.Scan() {
@@ -115,7 +115,7 @@ func addBook(lib *services.Library, reader *bufio.Scanner) {
 	fmt.Println("\nBook is added successfully!\n")
 }
 
-func removeBook(lib *services.Library, reader *bufio.Scanner) {
+func removeBook(lib services.LibraryManager, reader *bufio.Scanner) {
 	fmt.Print("Enter book ID: ")
 	if !reader.Scan() {
 		if err := reader.Err(); err != nil {
@@ -140,7 +140,7 @@ func removeBook(lib *services.Library, reader *bufio.Scanner) {
 	fmt.Println("\nBook is removed successfully!\n")
 }
 
-func borrowBook(lib *services.Library, reader *bufio.Scanner) {
+func borrowBook(lib services.LibraryManager, reader *bufio.Scanner) {
 	fmt.Print("Enter book ID: ")
 	if !reader.Scan() {
 		if err := reader.Err(); err != nil {
@@ -181,7 +181,7 @@ func borrowBook(lib *services.Library, reader *bufio.Scanner) {
 	}
 }
 
-func returnBook(lib *services.Library, reader *bufio.Scanner) {
+func returnBook(lib services.LibraryManager, reader *bufio.Scanner) {
 	fmt.Print("Enter book ID: ")
 	if !reader.Scan() {
 		if err := reader.Err(); err != nil {
@@ -222,7 +222,7 @@ func returnBook(lib *services.Library, reader *bufio.Scanner) {
 	}
 }
 
-func listAvailableBooks(lib *services.Library) {
+func listAvailableBooks(lib services.LibraryManager) {
 	books := lib.ListAvailableBooks()
 	if len(books) == 0 {
 		fmt.Println("\nThere are no available books.\n")
@@ -238,7 +238,7 @@ func listAvailableBooks(lib *services.Library) {
 	}
 }
 
-func listBorrowedBooks(lib *services.Library, reader *bufio.Scanner) {
+func listBorrowedBooks(lib services.LibraryManager, reader *bufio.Scanner) {
 	fmt.Print("Enter member ID: ")
 	if !reader.Scan() {
 		fmt.Println("Error reading member ID.")
@@ -267,7 +267,7 @@ func listBorrowedBooks(lib *services.Library, reader *bufio.Scanner) {
 	}
 }
 
-func registerUser(lib *services.Library, reader *bufio.Scanner) {
+func registerUser(lib services.LibraryManager, reader *bufio.Scanner) {
 	id := lib.GetNextUniqueMemberID()
 
 	fmt.Print("Please enter your name: ")
@@ -293,7 +293,7 @@ func registerUser(lib *services.Library, reader *bufio.Scanner) {
 	fmt.Println("\nMember is added successfully!\n")
 }
 
-func listMembers(lib *services.Library) {
+func listMembers(lib services.LibraryManager) {
 	members := lib.ListAllMembers()
 
 	if len(members) == 0 {
