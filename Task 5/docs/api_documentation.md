@@ -1,5 +1,9 @@
 # API Endpoints Documentation
 
+## Postman Documentation 
+
+- https://documenter.getpostman.com/view/31532211/2sA3s4kqKz
+
 ## Setup Environmental Variables and Make Connection with Database
 
 - Create .env file
@@ -187,7 +191,3 @@
     "error": "error message"
   }
   ```
-
-# Connection to MongoDB 
-
-## 
