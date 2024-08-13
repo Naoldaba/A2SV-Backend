@@ -8,7 +8,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-
 type ITaskUseCase interface {
 	AddTask(task *domain.Task, id primitive.ObjectID) (*domain.Task, error)
 	GetTasks() ([]*domain.Task, error)
