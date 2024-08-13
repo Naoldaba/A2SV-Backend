@@ -1,5 +1,6 @@
 # This workflow will build a golang project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
 name: Go
 
 on:
@@ -13,6 +14,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v4
 
@@ -21,14 +23,19 @@ jobs:
       with:
         go-version: '1.22.5'
 
-    - name: Start MongoDB service
-      run: sudo service mongodb start
-
-    - name: Wait for MongoDB to be ready
+    - name: Install MongoDB
       run: |
-        while ! nc -z localhost 27017; do
-          sleep 1
-        done
+        sudo apt-get update
+        sudo apt-get install -y mongodb
+        sudo systemctl start mongodb
+        sudo systemctl status mongodb
+
+    - name: Build
+      run: cd 'Task 8' && go build -v ./...
+
+    - name: Test
+      run: cd 'Task 8' && go test -v ./...
+
 
     - name: Build
       run: cd 'Task 8' && go build -v ./...
