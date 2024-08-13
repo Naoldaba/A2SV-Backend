@@ -1,5 +1,9 @@
 # API Endpoints Documentation
 
+## Postman Documenation
+
+- https://documenter.getpostman.com/view/31532211/2sA3s4nB2P
+
 ## Setup Environmental Variables and Make Connection with Database
 
 - Create .env file
