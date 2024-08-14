@@ -12,7 +12,9 @@ import (
 
 var jwtSecret = []byte(os.Getenv("SECRET_KEY"))
 
-func GenerateToken(existingUser domain.User) (string, error) {
+type TokenGenerator func(user domain.User) (string, error)
+
+var GenerateToken TokenGenerator = func(existingUser domain.User) (string, error) {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal(err)
@@ -20,8 +22,8 @@ func GenerateToken(existingUser domain.User) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": existingUser.ID,
-		"email": existingUser.Email,
-		"role": existingUser.Role,
+		"email":   existingUser.Email,
+		"role":    existingUser.Role,
 	})
 
 	SignedToken, err := token.SignedString(jwtSecret)

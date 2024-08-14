@@ -7,23 +7,23 @@ import (
 	"task_manager_api/Delivery/controllers"
 	"task_manager_api/Delivery/routers"
 	infrastructure "task_manager_api/Infrastructure"
-	"task_manager_api/Repository/Implementation"
+	implemenation "task_manager_api/Repository/Implementation"
 	usecases "task_manager_api/UseCases"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
 
-func main(){
+func main() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal(err)
-		return 
+		return
 	}
 	db_instance, err := infrastructure.DbInstance()
-	if err  != nil {
+	if err != nil {
 		log.Fatal(err)
-		return 
+		return
 	}
 
 	fmt.Println("Database connected successfully")
@@ -35,17 +35,17 @@ func main(){
 	userRepo := implemenation.NewUserRepository(db_instance)
 
 	taskUsecase := usecases.NewTaskUseCase(tasKRepo)
-	userUsecase := usecases.NewUserUseCase(userRepo)
+	userUsecase := usecases.NewUserUseCase(userRepo, infrastructure.PasswordHasher)
 
 	taskController := controllers.NewTaskController(taskUsecase)
-	userController := controllers.NewUserController(userUsecase)
+	userController := controllers.NewUserController(userUsecase, infrastructure.PasswordComparator, infrastructure.GenerateToken)
 
 	routers.CreateTaskRouter(router, taskController)
 	routers.CreateUserRouter(router, userController)
 
-	if err := router.Run(":"+os.Getenv("PORT")); err!= nil{
+	if err := router.Run(":" + os.Getenv("PORT")); err != nil {
 		log.Fatal(err)
 	}
 
 	fmt.Println("server connnected")
-}	
+}

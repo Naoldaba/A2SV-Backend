@@ -13,11 +13,15 @@ import (
 
 type UserController struct {
 	userUsecase *usecases.UserUseCase
+	passComp infrastructure.ComparePassword
+	tokenGen infrastructure.TokenGenerator
 }
 
-func NewUserController(userUsecase *usecases.UserUseCase) *UserController{
+func NewUserController(userUsecase *usecases.UserUseCase, passComp infrastructure.ComparePassword, tokenGen infrastructure.TokenGenerator) *UserController{
 	return &UserController{
 		userUsecase: userUsecase,
+		passComp: passComp,
+		tokenGen: tokenGen,
 	}
 }
 
@@ -66,6 +70,12 @@ func (uc *UserController) Login(c *gin.Context){
 	if err != nil {
 		log.Fatal(err)
 		return
+	}
+
+	ok := uc.passComp(&user, existingUser)
+	if !ok {
+		c.JSON(500, gin.H{"error": "Incorrect password or email"})
+		return 
 	}
 	
 	SignedToken, err := infrastructure.GenerateToken(*existingUser)

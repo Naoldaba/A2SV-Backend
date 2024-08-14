@@ -10,11 +10,13 @@ import (
 
 type UserUseCase struct {
 	userRepo interfaces.IUserRepository
+	hasher infrastructure.HashPassword
 }
 
-func NewUserUseCase(userRepo interfaces.IUserRepository) *UserUseCase{
+func NewUserUseCase(userRepo interfaces.IUserRepository,hasher infrastructure.HashPassword ) *UserUseCase{
 	return &UserUseCase{
 		userRepo:userRepo,
+		hasher: hasher,
 	}
 }
 
@@ -23,7 +25,7 @@ func (uc *UserUseCase) Register(user *domain.User) error {
 	if existingUser != nil {
 		return errors.New("user already exists")
 	}
-	hashedPassword, err := infrastructure.HashPassword(user)
+	hashedPassword, err := uc.hasher(user)
 	if err != nil {
 		log.Fatal(err)
 	}

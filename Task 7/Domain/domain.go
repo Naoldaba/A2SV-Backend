@@ -20,5 +20,5 @@ type User struct{
 	UserName	string					`json:"username"`
 	Email		string					`json:"email"`
 	Role		string					`json:"role" validate:"required, oneof=ADMIN USER"`
-	Password	string					`json:"-"`
+	Password	string					`json:"password"`
 }	
