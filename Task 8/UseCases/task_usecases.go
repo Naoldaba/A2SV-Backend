@@ -2,8 +2,8 @@ package usecases
 
 import (
 	"errors"
-	"task_manager_api/Domain"
-	"task_manager_api/Repository/Interfaces"
+	domain "task_manager_api/Domain"
+	interfaces "task_manager_api/Repository/Interfaces"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -16,11 +16,11 @@ type ITaskUseCase interface {
 	DeleteTask(id string) error
 }
 
-type TaskUseCase struct{
+type TaskUseCase struct {
 	taskRepo interfaces.ITaskRepository
 }
 
-func NewTaskUseCase(taskRepo interfaces.ITaskRepository) ITaskUseCase{
+func NewTaskUseCase(taskRepo interfaces.ITaskRepository) ITaskUseCase {
 	return &TaskUseCase{
 		taskRepo: taskRepo,
 	}

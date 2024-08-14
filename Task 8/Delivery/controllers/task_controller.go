@@ -25,7 +25,6 @@ func (tc *TaskController) AddTask(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
 		return
 	}
-	
 	userID, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "No user ID"})
@@ -34,7 +33,7 @@ func (tc *TaskController) AddTask(c *gin.Context) {
 
 	user_id := userID.(string)
 	user_ID, err := primitive.ObjectIDFromHex(user_id)
-	
+
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID format"})
 		return
@@ -75,7 +74,7 @@ func (tc *TaskController) UpdateTask(c *gin.Context) {
 	id := c.Param("id")
 
 	var task domain.Task
-	if err := c.ShouldBindJSON(&task); err != nil {
+	if err := c.BindJSON(&task); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
 		return
 	}

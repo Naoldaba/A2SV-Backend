@@ -107,7 +107,7 @@
 
 ### Register User
 
-- **Endpoint:** `POST /register`
+- **Endpoint:** `POST /user/register`
 - **Description:** Registers a new user.
 
 
@@ -121,7 +121,7 @@
 
 ### Login User
 
-- **Endpoint:** `POST /login`
+- **Endpoint:** `POST /user/login`
 - **Description:** Authenticates a user and returns a JWT token.
 
 #### Request Body:
@@ -130,6 +130,32 @@
 #### Response:
 - **200 OK:** Successful response, returns the JWT token.
 
+---
+
+### Get Users
+
+- **Endpoint:** `POST /users`
+- **Description:** Retrives all user. Can only be used by ADMINs
+
+#### Request Body:
+- 
+
+#### Response:
+- **200 OK:** Successful response, returns all users
+
+---
+
+### Promote Users
+
+- **Endpoint:** `POST /user/promote_user/:id`
+- **Description:** Promotes a USER to ADMIN. Can only be used by ADMINs
+
+#### Request Body:
+- 
+
+#### Response:
+- **200 OK:** Successful response, returns the updated user profile
+
 
 ## Test Metrices/ Tested Components
 
@@ -137,6 +163,9 @@
 - Task UseCase
 - User Repository
 - User UseCase
+- Task Controller
+- User Controller
+- Infrastructure
 
 ### Run Tests
 - go test -v ./...

@@ -10,14 +10,22 @@ type MockUserUseCase struct {
 	mock.Mock
 }
 
-
 func (m *MockUserUseCase) Register(user *domain.User) error {
-	args := m.Called(user)
-	return args.Error(0)
+	_ = m.Called(user)
+	return nil
 }
 
-
-func (m *MockUserUseCase) GetUserByEmail(email string) (*domain.User, error) {
+func (m *MockUserUseCase) GetUser(email string) (*domain.User, error) {
 	args := m.Called(email)
-	return args.Get(0).(*domain.User), args.Error(1)
+	return args.Get(0).(*domain.User), nil
+}
+
+func (m *MockUserUseCase) PromoteUserByID(id string, promoter *domain.User) (*domain.User, error){
+	args := m.Called(id, promoter)
+	return args.Get(0).(*domain.User), nil
+}
+
+func (m *MockUserUseCase) GetAllUsers() ([]*domain.User, error){
+	args := m.Called()
+	return args.Get(0).([]*domain.User), nil
 }

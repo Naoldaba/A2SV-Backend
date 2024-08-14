@@ -21,3 +21,13 @@ func (m *MockUserRepository) Register(user *domain.User) error {
     args := m.Called(user)
     return args.Error(0)
 }
+
+func (m *MockUserRepository) PromoteUser(id string) (*domain.User, error){
+	args := m.Called(id)
+	return args.Get(0).(*domain.User), nil
+}
+
+func (m *MockUserRepository) GetAllUsers() ([]*domain.User, error){
+	args := m.Called()
+	return args.Get(0).([]*domain.User), nil
+}

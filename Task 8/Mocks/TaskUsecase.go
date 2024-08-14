@@ -14,20 +14,20 @@ type MockTaskUseCase struct {
 func (m *MockTaskUseCase) AddTask(task *domain.Task, userID primitive.ObjectID) (*domain.Task, error) {
 	args := m.Called(task, userID)
 	if args.Get(0) != nil {
-		return args.Get(0).(*domain.Task), args.Error(1)
+		return args.Get(0).(*domain.Task), nil
 	}
 	return nil, args.Error(1)
 }
 
 func (m *MockTaskUseCase) GetTasks() ([]*domain.Task, error) {
 	args := m.Called()
-	return args.Get(0).([]*domain.Task), args.Error(1)
+	return args.Get(0).([]*domain.Task), nil
 }
 
 func (m *MockTaskUseCase) GetTaskById(id string) (*domain.Task, error) {
 	args := m.Called(id)
 	if args.Get(0) != nil {
-		return args.Get(0).(*domain.Task), args.Error(1)
+		return args.Get(0).(*domain.Task), nil
 	}
 	return nil, args.Error(1)
 }
@@ -35,12 +35,12 @@ func (m *MockTaskUseCase) GetTaskById(id string) (*domain.Task, error) {
 func (m *MockTaskUseCase) UpdateTask(id string, task *domain.Task) (*domain.Task, error) {
 	args := m.Called(id, task)
 	if args.Get(0) != nil {
-		return args.Get(0).(*domain.Task), args.Error(1)
+		return args.Get(0).(*domain.Task), nil
 	}
 	return nil, args.Error(1)
 }
 
 func (m *MockTaskUseCase) DeleteTask(id string) error {
-	args := m.Called(id)
-	return args.Error(0)
+	_ = m.Called(id)
+	return nil
 }

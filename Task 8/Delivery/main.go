@@ -20,6 +20,7 @@ func main(){
 		log.Fatal(err)
 		return 
 	}
+
 	db_instance, err := infrastructure.DbInstance()
 	if err  != nil {
 		log.Fatal(err)
@@ -38,15 +39,16 @@ func main(){
 	userRepo := implemenation.NewUserRepository(userCollection)
 
 	taskUsecase := usecases.NewTaskUseCase(tasKRepo)
-	userUsecase := usecases.NewUserUseCase(userRepo)
+	userUsecase := usecases.NewUserUseCase(userRepo, infrastructure.PasswordHasher)
 
+	jwtService := infrastructure.NewJWTService([]byte(os.Getenv("SECRET_KEY")))
 	taskController := controllers.NewTaskController(taskUsecase)
-	userController := controllers.NewUserController(userUsecase)
+	userController := controllers.NewUserController(userUsecase, jwtService, infrastructure.PasswordComparator)
 
 	routers.CreateTaskRouter(router, taskController)
 	routers.CreateUserRouter(router, userController)
 
-	if err := router.Run(":"+os.Getenv("PORT")); err!= nil{
+	if err := router.Run(":" + os.Getenv("PORT")); err!= nil{
 		log.Fatal(err)
 	}
 
