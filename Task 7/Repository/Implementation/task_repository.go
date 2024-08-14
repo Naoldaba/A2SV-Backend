@@ -3,44 +3,29 @@ package implemenation
 import (
 	"context"
 	"errors"
-	"log"
-	"os"
+	domain "task_manager_api/Domain"
+	interfaces "task_manager_api/Repository/Interfaces"
 
-	"task_manager_api/Domain"
-	"task_manager_api/Repository/Interfaces"
-
-	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type TaskRepository struct{
+type TaskRepository struct {
 	collection *mongo.Collection
 }
 
-func NewTaskRepository(client *mongo.Client) interfaces.ITaskRepository{
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal(err)
-		return nil
-	}
-
-	collection := client.Database(os.Getenv("DB_NAME")).Collection("Tasks")
+func NewTaskRepository(collection *mongo.Collection) interfaces.ITaskRepository {
 	return &TaskRepository{
 		collection: collection,
 	}
 }
 
-func (repo *TaskRepository) AddTask(task *domain.Task, id string) (*domain.Task, error) {
-	userID, err := primitive.ObjectIDFromHex(id)
-	if err != nil { 
-		return nil, err
-	}
-	task.UserID = userID
+func (repo *TaskRepository) AddTask(task *domain.Task, id primitive.ObjectID) (*domain.Task, error) {
+	task.UserID = id
 	result, err := repo.collection.InsertOne(context.TODO(), task)
-	if err != nil { 
+	if err != nil {
 		return nil, err
 	}
 	task.ID = result.InsertedID.(primitive.ObjectID)
@@ -74,7 +59,7 @@ func (repo *TaskRepository) GetTaskById(id string) (*domain.Task, error) {
 	}
 
 	return task, err
-} 
+}
 
 func (repo *TaskRepository) UpdateTask(id string, updatedTask *domain.Task) (*domain.Task, error) {
 	objID, err := primitive.ObjectIDFromHex(id)
@@ -91,17 +76,17 @@ func (repo *TaskRepository) UpdateTask(id string, updatedTask *domain.Task) (*do
 		},
 	}
 
-    filter := bson.M{
-        "_id":objID,
-    }
+	filter := bson.M{
+		"_id": objID,
+	}
 	result := repo.collection.FindOneAndUpdate(context.TODO(), filter, update, options.FindOneAndUpdate().SetReturnDocument(options.After))
 	var task *domain.Task
-	
+
 	err = result.Decode(&task)
 	if err == mongo.ErrNoDocuments {
 		return nil, errors.New("task not found")
 	}
-	return task, err	
+	return task, err
 }
 
 func (repo *TaskRepository) DeleteTask(id string) error {
@@ -114,9 +99,6 @@ func (repo *TaskRepository) DeleteTask(id string) error {
 	if err == mongo.ErrNoDocuments {
 		return errors.New("task not found")
 	}
-    
+
 	return err
 }
-
-
-

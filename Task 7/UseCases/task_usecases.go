@@ -2,22 +2,31 @@ package usecases
 
 import (
 	"errors"
-	"task_manager_api/Domain"
-	"task_manager_api/Repository/Interfaces"
+	domain "task_manager_api/Domain"
+	interfaces "task_manager_api/Repository/Interfaces"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type ITaskUseCase interface {
+	AddTask(task *domain.Task, id primitive.ObjectID) (*domain.Task, error)
+	GetTasks() ([]*domain.Task, error)
+	GetTaskById(id string) (*domain.Task, error)
+	UpdateTask(id string, task *domain.Task) (*domain.Task, error)
+	DeleteTask(id string) error
+}
 
-type TaskUseCase struct{
+type TaskUseCase struct {
 	taskRepo interfaces.ITaskRepository
 }
 
-func NewTaskUseCase(taskRepo interfaces.ITaskRepository) *TaskUseCase{
+func NewTaskUseCase(taskRepo interfaces.ITaskRepository) ITaskUseCase {
 	return &TaskUseCase{
 		taskRepo: taskRepo,
 	}
 }
 
-func (uc *TaskUseCase) AddTask(task *domain.Task, id string) (*domain.Task, error) {
+func (uc *TaskUseCase) AddTask(task *domain.Task, id primitive.ObjectID) (*domain.Task, error) {
 	if task.Title == "" {
 		return nil, errors.New("task title cannot be empty")
 	}

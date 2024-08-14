@@ -2,30 +2,22 @@ package implemenation
 
 import (
 	"context"
-	"log"
-	"os"
 	"errors"
 
 	"task_manager_api/Domain"
 	"task_manager_api/Repository/Interfaces"
 
-	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type UserRepository struct{
 	collection *mongo.Collection
 }
 
-func NewUserRepository(client *mongo.Client) interfaces.IUserRepository{
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal(err)
-		return nil
-	}
-
-	collection := client.Database(os.Getenv("DB_NAME")).Collection("Users")
+func NewUserRepository(collection *mongo.Collection) interfaces.IUserRepository{
 	return &UserRepository{
 		collection: collection,
 	}
@@ -46,4 +38,38 @@ func (repo *UserRepository) Register(user *domain.User) error{
 		return err
 	}
 	return nil
+}
+
+func (repo *UserRepository) PromoteUser(id string) (*domain.User, error) {
+	objID, err := primitive.ObjectIDFromHex(id)
+    if err != nil {
+        return nil, err
+    }
+	
+    filter := bson.M{"_id": objID}
+    update := bson.M{"$set": bson.M{"role": "ADMIN"}}
+    opts := options.FindOneAndUpdate().SetReturnDocument(options.After)
+
+    var updatedUser domain.User
+    err = repo.collection.FindOneAndUpdate(context.Background(), filter, update, opts).Decode(&updatedUser)
+    if err != nil {
+        return nil, err
+    }
+    return &updatedUser, nil
+}
+
+func (repo *UserRepository) GetAllUsers() ([]*domain.User, error) {
+    var users []*domain.User
+    cursor, err := repo.collection.Find(context.Background(), bson.M{})
+    if err != nil {
+        return nil, err
+    }
+    defer cursor.Close(context.Background()) 
+
+    err = cursor.All(context.TODO(), &users)
+    if err != nil {
+        return nil, err
+    }
+
+    return users, nil
 }

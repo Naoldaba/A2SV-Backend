@@ -1,8 +1,8 @@
 # API Endpoints Documentation
 
-## Postman Documenation
+## Postman Documentation
 
-- https://documenter.getpostman.com/view/31532211/2sA3s4nB2P
+- https://documenter.getpostman.com/view/31532211/2sA3s4nB2R
 
 ## Setup Environmental Variables and Make Connection with Database
 
@@ -129,3 +129,31 @@
 
 #### Response:
 - **200 OK:** Successful response, returns the JWT token.
+
+---
+
+### Get Users
+
+- **Endpoint:** `POST /users`
+- **Description:** Retrives all user. Can only be used by ADMINs
+
+#### Request Body:
+- 
+
+#### Response:
+- **200 OK:** Successful response, returns all users
+
+---
+
+### Promote Users
+
+- **Endpoint:** `POST /user/promote_user/:id`
+- **Description:** Promotes a USER to ADMIN. Can only be used by ADMINs
+
+#### Request Body:
+- 
+
+#### Response:
+- **200 OK:** Successful response, returns the updated user profile
+
+

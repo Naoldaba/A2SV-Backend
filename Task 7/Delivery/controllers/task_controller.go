@@ -6,13 +6,14 @@ import (
 	"task_manager_api/UseCases"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type TaskController struct{
-	taskUsecase *usecases.TaskUseCase
+	taskUsecase usecases.ITaskUseCase
 }
 
-func NewTaskController(taskUsecase *usecases.TaskUseCase) *TaskController{
+func NewTaskController(taskUsecase usecases.ITaskUseCase) *TaskController{
 	return &TaskController{
 		taskUsecase: taskUsecase,
 	}
@@ -20,18 +21,25 @@ func NewTaskController(taskUsecase *usecases.TaskUseCase) *TaskController{
 
 func (tc *TaskController) AddTask(c *gin.Context) {
 	var task domain.Task
-	if err := c.ShouldBindJSON(&task); err != nil {
+	if err := c.BindJSON(&task); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
 		return
 	}
 	userID, exists := c.Get("userID")
-	user_id := userID.(string)
-	
 	if !exists {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "NO user ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No user ID"})
 		return
 	}
-	createdTask, err := tc.taskUsecase.AddTask(&task, user_id)
+
+	user_id := userID.(string)
+	user_ID, err := primitive.ObjectIDFromHex(user_id)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID format"})
+		return
+	}
+
+	createdTask, err := tc.taskUsecase.AddTask(&task, user_ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -66,7 +74,7 @@ func (tc *TaskController) UpdateTask(c *gin.Context) {
 	id := c.Param("id")
 
 	var task domain.Task
-	if err := c.ShouldBindJSON(&task); err != nil {
+	if err := c.BindJSON(&task); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
 		return
 	}
