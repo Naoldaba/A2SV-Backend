@@ -1,10 +1,11 @@
 package controllers
 
 import (
-	"net/http"
 	"log"
+	"net/http"
 	"task_manager_api/data"
 	"task_manager_api/models"
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -16,14 +17,13 @@ func init() {
 	var err error
 	taskService = data.TaskService{}
 
-    Client, err := data.DbInstance() 
+	Client, err := data.DbInstance()
 	if err != nil {
 		log.Fatal("Failed to connect to database:", err)
 	}
 
 	taskCollection = data.OpenCollection(Client, "Tasks")
 }
-
 
 func GetTasks(ctx *gin.Context) {
 
@@ -55,7 +55,7 @@ func AddTask(ctx *gin.Context) {
 		return
 	}
 
-	task, err := taskService.AddTask(taskCollection,newTask)
+	task, err := taskService.AddTask(taskCollection, newTask)
 	if err != nil {
 		ctx.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

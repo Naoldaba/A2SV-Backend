@@ -3,10 +3,11 @@ package router
 import (
 	"task_manager_api/controllers"
 	"task_manager_api/middleware"
+
 	"github.com/gin-gonic/gin"
 )
 
-func TaskRouter(router *gin.Engine){
+func TaskRouter(router *gin.Engine) {
 	router.GET("/tasks", middleware.JWTValidation(), middleware.RoleAuth("ADMIN", "USER"), controllers.GetTasks)
 	router.GET("/tasks/:id", middleware.JWTValidation(), middleware.RoleAuth("ADMIN", "USER"), controllers.GetTaskById)
 	router.POST("/tasks", middleware.JWTValidation(), middleware.RoleAuth("ADMIN"), controllers.AddTask)
