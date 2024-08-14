@@ -107,7 +107,7 @@
 
 ### Register User
 
-- **Endpoint:** `POST /register`
+- **Endpoint:** `POST /user/register`
 - **Description:** Registers a new user.
 
 
@@ -121,7 +121,7 @@
 
 ### Login User
 
-- **Endpoint:** `POST /login`
+- **Endpoint:** `POST /user/login`
 - **Description:** Authenticates a user and returns a JWT token.
 
 #### Request Body:
