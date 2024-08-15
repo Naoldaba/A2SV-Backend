@@ -141,7 +141,7 @@
 - 
 
 #### Response:
-- **200 OK:** Successful response, returns all users
+- **200 OK:** Successful response, returns all users.
 
 ---
 
