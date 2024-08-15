@@ -34,6 +34,7 @@ jobs:
       - name: Run tests
         run: |
           cd "Task 8"
+          cd "Tests"
           go test -v domain_test.go task_controller_test.go task_usecase_test.go user_controller_test.go user_usecase_test.go
 
       - name: Build
