@@ -12,6 +12,11 @@ on:
   pull_request:
     paths:
       - 'Task 8/**'
+env:
+  CONNECTION_STRING = mongodb://localhost:27017
+  DB_NAME = TaskManager
+  PORT = 8080
+  SECRET_KEY = awerq43 4325dfgsd 4325sdfgsd 345345 435 afsdf
 
 jobs:
   build:
