@@ -148,7 +148,7 @@
 ### Promote Users
 
 - **Endpoint:** `POST /user/promote_user/:id`
-- **Description:** Promotes a USER to ADMIN. Can only be used by ADMINs
+- **Description:** Promotes a USER to ADMIN.  Available only for ADMINs
 
 #### Request Body:
 - 
