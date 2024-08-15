@@ -2,13 +2,12 @@ name: Go CI/CD
 
 on:
   push:
-    paths:
-      - 'Task 8/**'
     branches:
       - main
+
   pull_request:
-    paths:
-      - 'Task 8/**'
+    branches:
+      - main
 
 jobs:
   build:
@@ -24,21 +23,21 @@ jobs:
           go-version: '1.22.5'
 
       - name: Install dependencies
-        working-directory: ./Task\8
+        working-directory: ./Task\ 8
         run: |
           go mod download
 
       - name: Run Infrastructure Test
-        working-directory: ./Task\8
+        working-directory: ./Task\ 8
         run: |
           go test -v ./Tests/infrastructure
 
       - name: Run tests
-        working-directory: ./Task\8
+        working-directory: ./Task\ 8
         run: |
           go test -v domain_test.go task_controller_test.go task_usecase_test.go user_controller_test.go user_usecase_test.go
 
       - name: Build
-        working-directory: ./Task\8
+        working-directory: ./Task\ 8
         run: |
           go build -v
