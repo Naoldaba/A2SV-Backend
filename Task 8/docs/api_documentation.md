@@ -152,6 +152,8 @@
 
 #### Request Body:
 - 
+#### Parameters:
+- `id` (required): The ID of the user to be promoted
 
 #### Response:
 - **200 OK:** Successful response, returns the updated user profile
