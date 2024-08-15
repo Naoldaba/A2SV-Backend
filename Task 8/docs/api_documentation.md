@@ -135,7 +135,7 @@
 ### Get Users
 
 - **Endpoint:** `POST /users`
-- **Description:** Retrives all user. Can only be used by ADMINs
+- **Description:** Retrives all user. Available only for ADMINs
 
 #### Request Body:
 - 
