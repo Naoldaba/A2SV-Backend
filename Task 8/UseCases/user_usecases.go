@@ -8,6 +8,8 @@ import (
 	interfaces "task_manager_api/Repository/Interfaces"
 )
 
+
+
 type IUserUseCase interface {
 	Register(user *domain.User) error
 	GetUser(email string) (*domain.User, error)
